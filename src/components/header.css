@@ -1,0 +1,11 @@
+
+.custom-header {
+  background: linear-gradient(
+    90deg,
+    rgba(135, 206, 235, 0.8),
+    rgba(176, 224, 230, 0.8)
+  );
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(135, 206, 235, 0.5);
+}

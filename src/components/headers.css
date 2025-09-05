@@ -1,0 +1,100 @@
+/* Base */
+body {
+  font-family: "Arial", sans-serif;
+  /* direction: rtl already set globally */
+}
+
+.custom-navbar {
+  padding: 0.5rem 1rem;
+}
+
+.navbar-nav .nav-link {
+  color: #fff !important;
+  font-weight: 500;
+  margin: 0 8px;
+}
+
+.navbar-nav .nav-link.active {
+  font-weight: bold;
+}
+
+.header .btn-contact {
+  background-color: #a8d18d;
+  border: none;
+  color: #000;
+  font-weight: bold;
+  border-radius: 0;
+  width: 134px;
+}
+
+.btn-contact:hover {
+  background-color: #8fc874;
+}
+
+/* Layout helpers for RTL:
+   - First col (logo) appears on the RIGHT automatically (RTL).
+   - Third col (icons) appears on the LEFT automatically (RTL). */
+.logo-sec {
+  text-align: right;
+}
+
+/* Put the icons group flush to the left edge in RTL.
+   In RTL, "flex-end" maps to the left side of the row. */
+.icons-sec {
+  justify-content: flex-end;
+}
+
+/* Keep the items inside the icons group laid out left-to-right for nice spacing */
+.icons-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  direction: ltr;
+  /* stable order: [Contact][Bag][User][Toggler] */
+}
+
+.icons-group a,
+.icons-group button {
+  display: inline-flex;
+  align-items: center;
+}
+
+/* Tablet & down (≤ 768px) */
+@media (max-width: 768px) {
+  .header .btn-contact {
+    display: none !important;
+  }
+
+  /* save space */
+  .navbar-brand img {
+    width: 180px;
+    height: auto;
+  }
+
+  /* slightly smaller logo */
+  .icons-group {
+    gap: 10px;
+  }
+}
+
+/* Small phones (≤ 412px) */
+@media (max-width: 412px) {
+  .navbar-brand img {
+    width: 150px;
+    height: auto;
+  }
+
+  .icons-group img {
+    width: 22px;
+    height: auto;
+  }
+
+  .navbar-nav .nav-link {
+    font-size: 14px;
+    margin: 4px 6px;
+  }
+
+  /* .rectangle2 {
+    padding: 0;
+  } */
+}
