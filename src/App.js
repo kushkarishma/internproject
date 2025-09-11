@@ -23,93 +23,97 @@ import './App.css';
 
 function App() {
 
-  const privateRoutes =[
+  const privateRoutes = [
     {
-      path:'/login',
-      element :<Login />,
+      path: '/login',
+      element: <Login />,
     },
 
     {
-      path:'/registration',
-      element :<Registration />,
+      path: '/registration',
+      element: <Registration />,
     },
-    
+
   ];
 
-  const protectedRoutes=[
+  const protectedRoutes = [
     {
-      path:'/profile',
-      element:<Profile />,
+      path: '/profile',
+      element: <Profile />,
     },
 
-     {
-      path:'/dashboard',
-      element:<Dashboard/>,
-    }, 
+    {
+      path: '/dashboard',
+      element: <Dashboard />,
+    },
 
     {
-      path:'/addtocart',
-      element:<AddToCart/>,
+      path: '/addtocart',
+      element: <AddToCart />,
     },
   ];
-    const adminRoutes = [
-  {
-    path: "addproduct",
-    element: <AddNewProduct />,
-  },
-  {
-    path: "edit-product/:id",
-    element: <AddNewProduct />,
-  },
-  {
-    path: "productlist",
-    element: <ProductList />,
-  },
-];
+  const adminRoutes = [
+    {
+      path: "addproduct",
+      element: <AddNewProduct />,
+    },
+    {
+      path: "edit-product/:id",
+      element: <AddNewProduct />,
+    },
+    {
+      path: "productlist",
+      element: <ProductList />,
+    },
+    {
+      path: "addproduct/:id",
+      element: <AddNewProduct />,
+    },
+  ];
 
-  
+
 
   return (
     <BrowserRouter>
-    <Header/>
-    
-        <Routes>
-              {/* admin routing-------------------------------------------------------------------- */}
-             <Route element={<AdminProtected />}>
-                  <Route path="/adminpage" element={<AdminLayout />}>
-                    {adminRoutes.map((route, index) => (
-                      <Route key={index} path={route.path} element={route.element} />
-                    ))}
-                  </Route>
-            </Route>
+      <Header />
+
+      <Routes>
+        {/* admin routing-------------------------------------------------------------------- */}
+        <Route element={<AdminProtected />}>
+          <Route path="/adminpage" element={<AdminLayout />}>
+            {adminRoutes.map((route, index) => (
+              <Route key={index} path={route.path} element={route.element} />
+            ))}
+          </Route>
+        </Route>
 
 
-              {/* public-----------------------------------------------------------------------------*/}
-                <Route path="/home" element={<Home />} />
-                <Route path="/products" element={<Products />} />
-                <Route path="*" element={<NotFoundPage />} /> 
+        {/* public-----------------------------------------------------------------------------*/}
+        <Route path="/home" element={<Home />} />
+        <Route path="/products" element={<Products />} />
+        <Route path="*" element={<NotFoundPage />} />
 
 
-              {/*protected----------------------------------------------------------------------------*/}
-                <Route element={<Protected />}>
-                  {
-                    protectedRoutes.map((route,index)=>(
-                      <Route key ={index} path={route.path} element={route.element}/>
-                    ))
-                  }
-                </Route>
+        {/*protected----------------------------------------------------------------------------*/}
+        <Route element={<Protected />}>
+          {
+            protectedRoutes.map((route, index) => (
+              <Route key={index} path={route.path} element={route.element} />
+            ))
+          }
+        </Route>
 
 
-              {/*private------------------------------------------------------------------------------*/}
-                <Route element ={<Private/>}>
-                  {
-                    privateRoutes.map((route,index)=>(
-                      <Route key ={index} path={route.path} element={route.element}/>
-                    ))
-                  }
-                </Route>
-                
-       </Routes>
+        {/*private------------------------------------------------------------------------------*/}
+        <Route element={<Private />}>
+          {
+            privateRoutes.map((route, index) => (
+              <Route key={index} path={route.path} element={route.element} />
+            ))
+          }
+        </Route>
+
+      </Routes>
 
 
       {/* <Footer /> */}

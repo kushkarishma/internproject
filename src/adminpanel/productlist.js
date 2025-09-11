@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import {fetchData} from "../api/api-service";
+import { getBackendData, deleteBackendData } from "../api/api-service";
+import { toast } from "react-toastify";
 
 function ProductList() {
   const [products, setProducts] = useState([]);
 
-  const viewList = async () => {
+  const getProductsById = async () => {
     try {
-      const result = await fetchData("products");
+      const result = await getBackendData("products");
       setProducts(result);
       console.log(result);
     } catch (error) {
@@ -15,85 +16,59 @@ function ProductList() {
     }
   };
 
- const handleDelete = async (id) => {
-  if (window.confirm("Are you sure you want to delete this product?")) {
-    try {
-      await fetchData(`products/${id}`);
-      setProducts(products.filter((item) => item.id !== id));
-      alert("Product deleted successfully!");
-    } catch (error) {
-      console.error("Error deleting product:", error);
+  const handleDelete = async (id) => {
+    if (window.confirm("Are you sure you want to delete this product?")) {
+      try {
+        await deleteBackendData(`products/${id}`);
+        setProducts(products.filter((item) => item.id !== id));
+        toast.success("Product deleted successfully!");
+      } catch (error) {
+        console.error("Error deleting product:", error);
+      }
     }
-  }
-};
+  };
 
- useEffect(() => {
-    viewList();
+  useEffect(() => {
+    getProductsById();
   }, []);
-
 
   return (
     <div className="container mt-4">
       <div className="d-flex justify-content-between align-items-center mb-3">
-        <h2>Product List</h2>
+        <h3>Product List</h3>
         <Link to="/adminpage/addproduct" className="btn btn-primary">
-          ➕ Add New Product
+          Add New Product
         </Link>
       </div>
 
-      
-      <div className="table-responsive">
-        <table className="table table-striped table-bordered align-middle">
-          <thead className="table-dark">
-            <tr>
-              <th>ID</th>
-              <th>Image</th>
-              <th>Title</th>
-              <th>Price ($)</th>
-              <th>Category</th>
-              <th>Description</th>
-              <th style={{ width: "160px" }}>Actions</th>
+      <table className="table table-bordered">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Price</th>
+            <th>Category</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {products.map((p) => (
+            <tr key={p.id}>
+              <td>{p.id}</td>
+              <td>{p.title}</td>
+              <td>{p.price}</td>
+              <td>{p.category}</td>
+              <td>
+                <Link to={`/adminpage/addproduct/${p.id}`} className="btn btn-warning btn-sm me-2">Edit</Link>
+                
+                <button className="btn btn-danger btn-sm" onClick={() => handleDelete(p.id)}>
+                  Delete
+                </button>
+              </td>
             </tr>
-          </thead>
-          <tbody>
-            {products.length > 0 ? (
-              products.map((item) => (
-                <tr key={item.id}>
-                  <td>{item.id}</td>
-                  <td>
-                    <img
-                      src={item.image}
-                      alt={item.title}
-                      style={{ width: "50px", height: "50px", objectFit: "contain" }}
-                    />
-                  </td>
-                  <td>{item.title}</td>
-                  <td>${item.price}</td>
-                  <td>{item.category}</td>
-                  <td style={{ maxWidth: "300px" }}>{item.description}</td>
-                  <td>
-                    <Link
-                      to={`/edit-product/${item.id}`}
-                      className="btn btn-sm btn-warning me-2"
-                    >
-                      Edit
-                    </Link>
-                      <button
-                      onClick={() => handleDelete(item.id)}
-                      className="btn btn-sm btn-danger">Delete </button>
-                  </td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="7" className="text-center">
-                  No Products Found
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }
