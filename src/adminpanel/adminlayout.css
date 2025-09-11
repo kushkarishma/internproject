@@ -1,40 +1,70 @@
-
 .admin-layout {
   display: flex;
   min-height: 100vh;
+  background-color: #FFFAF0; /* whole page background */
 }
 
 .admin-sidebar {
   width: 240px;
-  background: linear-gradient(to bottom, #1a237e, #0d47a1);
-  color: white;
+  background-color: #FDEDEF; /* light pink sidebar */
+  color: #000; /* default text black */
   min-height: 100vh;
   position: fixed;
   top: 0;
   left: 0;
+  padding: 20px;
+  box-shadow: 2px 0 6px rgba(0, 0, 0, 0.1);
+}
+
+.admin-sidebar h4 {
+  color: #000;
+}
+
+.admin-sidebar .nav-link {
+  color: #000 !important; /* normal black */
+  font-weight: 500;
+  margin-bottom: 10px;
+  transition: color 0.3s ease; /* smooth hover effect */
+}
+
+.admin-sidebar .nav-link:hover {
+  color: #EE747A !important; /* hover par pink */
+}
+
+.admin-sidebar .nav-link.active {
+  font-weight: 600;
+  color: #EE747A !important; /* active link bhi pink */
 }
 
 .admin-main {
-  margin-left: 240px; 
+  margin-left: 240px;
   flex: 1;
   display: flex;
   flex-direction: column;
 }
-
 .admin-header {
-  height: 60px;
-  background: linear-gradient(to right, #1976d2, #0d47a1);
-  color: white;
-  display: flex;
-  align-items: center;
-  padding: 0 20px;
-  position: sticky;
-  top: 0;
-  z-index: 10;
+  background-color: #FDEDEF; /* light pink */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); /* subtle shadow */
+}
+
+.admin-header .navbar-brand {
+  color: #000; /* black text */
+  font-size: 1.4rem;
+}
+
+.admin-header .dropdown-toggle {
+  color: #000; /* black text */
+  cursor: pointer;
+}
+
+.admin-header .btn-outline-dark {
+  border: none;
+  background-color: #fff;
 }
 
 .admin-content {
   flex: 1;
   padding: 20px;
-  background: #f9f9f9;
+  background-color: #FFFAF0; /* content area background */
+  color: #000; /* content text black */
 }

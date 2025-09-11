@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { fetchData } from "../api/api-service";
+import {fetchData} from "../api/api-service";
 
 function ProductList() {
   const [products, setProducts] = useState([]);
@@ -14,11 +14,23 @@ function ProductList() {
       console.error("Error fetching products:", error);
     }
   };
-  
 
-  useEffect(() => {
+ const handleDelete = async (id) => {
+  if (window.confirm("Are you sure you want to delete this product?")) {
+    try {
+      await fetchData(`products/${id}`);
+      setProducts(products.filter((item) => item.id !== id));
+      alert("Product deleted successfully!");
+    } catch (error) {
+      console.error("Error deleting product:", error);
+    }
+  }
+};
+
+ useEffect(() => {
     viewList();
   }, []);
+
 
   return (
     <div className="container mt-4">
@@ -29,7 +41,7 @@ function ProductList() {
         </Link>
       </div>
 
-      {/* Table */}
+      
       <div className="table-responsive">
         <table className="table table-striped table-bordered align-middle">
           <thead className="table-dark">
@@ -66,7 +78,9 @@ function ProductList() {
                     >
                       Edit
                     </Link>
-                    <button className="btn btn-sm btn-danger">Delete</button>
+                      <button
+                      onClick={() => handleDelete(item.id)}
+                      className="btn btn-sm btn-danger">Delete </button>
                   </td>
                 </tr>
               ))

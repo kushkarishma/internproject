@@ -1,8 +1,13 @@
-import { useState } from "react";
-import { Postdata } from "../api/api-service";
+import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import { postData } from "../api/api-service";
 
 function AddNewProduct() {
+  const { id } = useParams();
+  const isEditing = !!id;
+
   const [formData, setFormData] = useState({
+    id: "",
     title: "",
     price: "",
     description: "",
@@ -17,15 +22,34 @@ function AddNewProduct() {
     }));
   };
 
+  useEffect(() => {
+    if (isEditing) {
+      const fetchProduct = async () => {
+        try {
+          const product = await postData(`products/${id}`);
+          setFormData(product);
+        } catch (error) {
+          console.error("Error fetching product:", error);
+        }
+      };
+      fetchProduct();
+    }
+  }, [id, isEditing]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(Postdata);
     try {
-      const result = await Postdata("products", formData);
-      console.log("Product Added:", result);
-      alert(" Product added successfully!");
+      if (isEditing) {
+        const result = await postData(`products/${id}`, formData);
+        console.log("Product Updated:", result);
+        alert("Product updated successfully!");
+      } else {
+        const result = await postData("products", formData);
+        console.log("Product Added:", result);
+        alert("Product added successfully!");
+      }
     } catch (error) {
-      console.error("Error adding product:", error);
+      console.error("Error saving product:", error);
     }
   };
 
@@ -44,64 +68,12 @@ function AddNewProduct() {
               className="form-control"
               id="id"
               placeholder="Enter product ID"
-           onchange={handleChange} />
-          </div>
-
-         
-          <div className="mb-3">
-            <label htmlFor="title" className="form-label">Title</label>
-            <input
-              type="text"
-              className="form-control"
-              id="title"
-              placeholder="Enter product title"
+              value={formData.id}
+              onChange={handleChange}
+              readOnly={isEditing}
             />
           </div>
 
-         
-          <div className="mb-3">
-            <label htmlFor="price" className="form-label">Price</label>
-            <input
-              type="number"
-              step="0.01"
-              className="form-control"
-              id="price"
-              placeholder="Enter price"
-            />
-          </div>
-
-         
-          <div className="mb-3">
-            <label htmlFor="description" className="form-label">Description</label>
-            <textarea
-              className="form-control"
-              id="description"
-              rows="3"
-              placeholder="Enter product description"
-            ></textarea>
-          </div>
-
-       
-          <div className="mb-3">
-            <label htmlFor="category" className="form-label">Category</label>
-            <input
-              type="text"
-              className="form-control"
-              id="category"
-              placeholder="Enter category"
-            />
-          </div>
-
-   
-          <div className="mb-3">
-            <label htmlFor="image" className="form-label">Image URL</label>
-            <input
-              type="url"
-              className="form-control"
-              id="image"
-              placeholder="Enter image URL"
-            />
-          </div>
 
       
           <div className="d-flex justify-content-between">

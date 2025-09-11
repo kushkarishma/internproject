@@ -17,6 +17,7 @@ import AdminLayout from "./adminpanel/adminlayout";
 import AddNewProduct from "./adminpanel/addnewproduct";
 import ProductList from "./adminpanel/productlist";
 import NotFoundPage from "./pagenotfound";
+import AdminProtected from "./adminProtected";
 
 import './App.css';
 
@@ -50,8 +51,23 @@ function App() {
       path:'/addtocart',
       element:<AddToCart/>,
     },
-
   ];
+    const adminRoutes = [
+  {
+    path: "addproduct",
+    element: <AddNewProduct />,
+  },
+  {
+    path: "edit-product/:id",
+    element: <AddNewProduct />,
+  },
+  {
+    path: "productlist",
+    element: <ProductList />,
+  },
+];
+
+  
 
   return (
     <BrowserRouter>
@@ -59,10 +75,13 @@ function App() {
     
         <Routes>
               {/* admin routing-------------------------------------------------------------------- */}
-               <Route path="/adminpage" element={<AdminLayout/>}>
-                     <Route path="addproduct" element={<AddNewProduct/>}/> 
-                     <Route path="productlist" element={<ProductList/>}/> 
-              </Route>
+             <Route element={<AdminProtected />}>
+                  <Route path="/adminpage" element={<AdminLayout />}>
+                    {adminRoutes.map((route, index) => (
+                      <Route key={index} path={route.path} element={route.element} />
+                    ))}
+                  </Route>
+            </Route>
 
 
               {/* public-----------------------------------------------------------------------------*/}

@@ -1,25 +1,24 @@
 import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 
-
 function AdminHeader() {
   return (
     <nav className="navbar admin-header px-4">
       <div className="container-fluid d-flex justify-content-between align-items-center">
+        
         {/* Left side - Logo/Title */}
-        <span className="navbar-brand mb-0 h1 text-white">Admin Panel</span>
+        <span className="navbar-brand mb-0 h1 fw-bold">Admin Panel</span>
 
         {/* Right side - Notification + Admin Dropdown */}
         <div className="d-flex align-items-center">
-        
-          <button className="btn btn-light btn-sm me-3 rounded-circle">
+          <button className="btn btn-outline-dark btn-sm me-3 rounded-circle">
             🔔
           </button>
 
           {/* Admin Dropdown */}
           <div className="dropdown">
             <span
-              className="text-white fw-bold dropdown-toggle"
+              className="fw-bold dropdown-toggle"
               role="button"
               data-bs-toggle="dropdown"
               aria-expanded="false"
