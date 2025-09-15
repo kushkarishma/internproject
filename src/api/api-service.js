@@ -1,7 +1,6 @@
 import axios from "axios";
 
 const BACKEND_URL = "http://localhost:8000/api";
-const API_URL = "https://fakestoreapi.com";
 
 // Backend POST
 const postBackendData = async (endpoint, data) => {
@@ -17,33 +16,35 @@ const postBackendData = async (endpoint, data) => {
     throw err;
   }
 };
+
 const getBackendData = async (endpoint) => {
   try {
-    const response = await axios.get(`${BACKEND_URL}/${endpoint}`);
+    const token = localStorage.getItem("token");
+    const response = await axios.get(`${BACKEND_URL}/${endpoint}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Cache-Control": "no-cache",   // 👈 add this
+      },
+    });
     return response.data;
   } catch (error) {
-    console.error("Error fetching data:", error);
+    console.error("Error fetching data:", error.response?.data || error.message);
     throw error;
   }
 };
 
-// const putBackendData = async (endpoint) => {
-//   try {
-//     const response = await axios.get(`${BACKEND_URL}/${endpoint}`);
-//     return response.data;
-//   } catch (error) {
-//     console.error("Error fetching data:", error);
-//     throw error;
-//   }
-// };
-
-// FakeStore GET
-const fetchData = async (endpoint) => {
+const putBackendData = async (endpoint, data) => {
   try {
-    const response = await axios.get(`${API_URL}/${endpoint}`);
+    const token = localStorage.getItem("token"); //  get token from localStorage
+    const response = await axios.put(`${BACKEND_URL}/${endpoint}`, data, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}` // send token
+      },
+    });
     return response.data;
   } catch (error) {
-    console.error("Error fetching data:", error);
+    console.error("Error updating data:", error.response?.data || error.message);
     throw error;
   }
 };
@@ -58,4 +59,4 @@ export const deleteBackendData = async (endpoint) => {
 };
 
 
-export { fetchData, getBackendData, postBackendData };
+export { getBackendData, putBackendData, postBackendData };

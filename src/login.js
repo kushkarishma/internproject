@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import { postBackendData } from "./api/api-service";
+import { toast } from "react-toastify";
 
 function Login() {
   const navigate = useNavigate();
@@ -17,34 +18,40 @@ function Login() {
       navigate(location.pathname, { replace: true });
     }
   }, [location, navigate]);
+  const onSubmit = async (data) => {
+    setLoading(true);
+    const loginData = { username: data.username.trim(), password: data.password };
 
-const onSubmit = async (data) => {
-  setLoading(true);
-  const loginData = { username: data.username.trim(), password: data.password };
+    try {
+      const result = await postBackendData("auth/login", loginData);
+      console.log("Login response:", result);
 
-  try {
-    const result = await postBackendData("auth/login", loginData);
-    console.log("Login response:", result);
+      if (result.token) {
+        localStorage.setItem("token", result.token);
+        localStorage.setItem("role", result.role);
+        localStorage.setItem("username", result.username);
 
-    if (result.token) {
-      localStorage.setItem("token", result.token);
-    
-      localStorage.setItem("role", result.role);
-      localStorage.setItem("username", result.username);
+        toast.success("Login successful 🎉");
 
-      const redirectTo = location.state?.from?.pathname || (result.role === "admin" ? "/adminpage" : "/home");
-      navigate(redirectTo, { replace: true });
-    } else {
-      alert(result.message || "Invalid username or password");
+        const redirectTo =
+          location.state?.from?.pathname ||
+          (result.role === "admin" ? "/adminpage" : "/home");
+
+        navigate(redirectTo, { replace: true });
+      } else {
+        toast.error(result.message || "Invalid username or password");
+      }
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message || error.message || "Login failed";
+      console.error("Login failed:", errorMessage);
+
+      toast.error(errorMessage);
+    } finally {
+      setLoading(false);
     }
-  } catch (error) {
-    const errorMessage = error.response?.data?.message || error.message || "Login failed";
-    console.error("Login failed:", errorMessage);
-    alert(errorMessage);
-  } finally {
-    setLoading(false);
-  }
-};
+  };
+
 
   return (
     <div className="container mt-5">

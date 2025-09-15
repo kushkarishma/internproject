@@ -16,6 +16,7 @@ import Private from "./private";
 import AdminLayout from "./adminpanel/adminlayout";
 import AddNewProduct from "./adminpanel/addnewproduct";
 import ProductList from "./adminpanel/productlist";
+import AdminUsers from "./adminpanel/adminuser";
 import NotFoundPage from "./pagenotfound";
 import AdminProtected from "./adminProtected";
 
@@ -51,7 +52,9 @@ function App() {
       path: '/addtocart',
       element: <AddToCart />,
     },
+
   ];
+
   const adminRoutes = [
     {
       path: "addproduct",
@@ -69,9 +72,11 @@ function App() {
       path: "addproduct/:id",
       element: <AddNewProduct />,
     },
+    {
+      path: 'adminuser',
+      element: <AdminUsers />
+    },
   ];
-
-
 
   return (
     <BrowserRouter>
@@ -86,7 +91,6 @@ function App() {
             ))}
           </Route>
         </Route>
-
 
         {/* public-----------------------------------------------------------------------------*/}
         <Route path="/home" element={<Home />} />

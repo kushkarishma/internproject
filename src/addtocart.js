@@ -4,7 +4,7 @@ import QuantitySelector from "./components/quantityselector";
 
 function AddToCart() {
     const [cart, setCart] = useState([]);
-    
+
     useEffect(() => {
         const savedCart = JSON.parse(localStorage.getItem("cart")) || [];
         const cartWithQuantity = savedCart.map((item) => ({
@@ -41,7 +41,7 @@ function AddToCart() {
         toast.info("🗑 Cart cleared!");
     };
 
-    const total = cart.reduce((sum, item) => sum + (item.price*83) * item.quantity, 0);
+    const total = cart.reduce((sum, item) => sum + (item.price * 83) * item.quantity, 0);
 
     return (
         <div className="container pt-10 my-5">
@@ -64,7 +64,7 @@ function AddToCart() {
                                         />
                                         <div className="flex-grow-1">
                                             <h5 className="card-title">{item.title}</h5>
-                                            <p className="card-text mb-1">Price:₹{ (item.price*83).toFixed(0)}</p>
+                                            <p className="card-text mb-1">Price:₹{(item.price * 83).toFixed(0)}</p>
 
                                             <QuantitySelector
                                                 initial={item.quantity}

@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { fetchData } from "../api/api-service";
+import { getBackendData } from "../api/api-service";
 import "./home.css";
-
+  
 function Home() {
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
     const getProducts = async () => {
       try {
-        const data = await fetchData("products");
+        const data = await getBackendData("products");
         setProducts(data.slice(0, 3)); // Top 3 products
       } catch (error) {
         console.error("Error fetching products:", error);
@@ -20,7 +20,6 @@ function Home() {
 
   return (
     <div>
-      {/* Hero Section */}
       <section>
         <div className="container py-5 custom-hero">
           <div className="row align-items-center">

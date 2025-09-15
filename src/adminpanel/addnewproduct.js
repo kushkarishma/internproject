@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { postBackendData, getBackendData } from "../api/api-service";
+import { postBackendData, getBackendData, putBackendData } from "../api/api-service";
 import { toast } from "react-toastify";
 
 function AddNewProduct() {
   const { id } = useParams();
   const isEditing = !!id;
-  debugger
+
   const [formData, setFormData] = useState({
     title: "",
     price: "",
@@ -27,7 +27,6 @@ function AddNewProduct() {
       const fetchProduct = async () => {
         try {
           const product = await getBackendData(`products/${id}`);
-          debugger
           setFormData(product);
         } catch (error) {
           console.error("Error fetching product:", error);
@@ -42,7 +41,7 @@ function AddNewProduct() {
     e.preventDefault();
     try {
       if (isEditing) {
-        const result = await postBackendData(`products/${id}`, formData);
+        const result = await putBackendData(`products/${id}`, formData);
         console.log("Product Updated:", result);
         toast.success("Product updated successfully!");
       } else {

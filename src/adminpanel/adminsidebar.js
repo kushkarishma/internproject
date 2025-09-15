@@ -10,14 +10,17 @@ function AdminSidebar() {
         </NavLink>
 
         <NavLink className="nav-link text-black" to="/products">
-            📦Products
+          📦Products
         </NavLink>
 
         <NavLink className="nav-link text-black" to="/adminpage/productlist">
           📋Productlist
         </NavLink>
-          <NavLink className="nav-link text-black" to="/profile">
-           📌Profile
+        <NavLink className="nav-link text-black" to="/profile">
+          📌Profile
+        </NavLink>
+        <NavLink className="nav-link text-black" to="/adminpage/adminuser">
+          👤 View Users
         </NavLink>
       </nav>
     </aside>

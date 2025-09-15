@@ -60,7 +60,7 @@ function ProductList() {
               <td>{p.category}</td>
               <td>
                 <Link to={`/adminpage/addproduct/${p.id}`} className="btn btn-warning btn-sm me-2">Edit</Link>
-                
+
                 <button className="btn btn-danger btn-sm" onClick={() => handleDelete(p.id)}>
                   Delete
                 </button>

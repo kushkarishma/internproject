@@ -3,23 +3,18 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import QuantitySelector from "./components/quantityselector";
 import { getBackendData } from "./api/api-service";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 
 function Products() {
   const [allProducts, setAllProducts] = useState([]); // all data
   const [products, setProducts] = useState([]);       // filtered data
   const [selectedCategory, setSelectedCategory] = useState("All");
+  const [categories, setCategories] = useState(["All"]); // 🔥 dynamic categories
   let [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const limit = 6;
   const navigate = useNavigate();
-
-  const categories = [
-    "All",
-    "men's clothing",
-    "jewelery",
-    "electronics",
-    "women's clothing"
-  ];
 
   useEffect(() => {
     getProducts();
@@ -36,11 +31,16 @@ function Products() {
         setAllProducts([]);
         setTotalPages(1);
         setProducts([]);
+        setCategories(["All"]);
         return;
       }
       setAllProducts(result);
       setTotalPages(Math.ceil(result.length / limit));
       setProducts(result.slice(0, limit));
+
+
+      const uniqueCategories = ["All", ...new Set(result.map((p) => p.category))];
+      setCategories(uniqueCategories);
     } catch (error) {
       console.error("Error fetching products:", error);
     }
@@ -53,7 +53,6 @@ function Products() {
         : allProducts.filter((p) => p.category === selectedCategory);
 
     setTotalPages(Math.ceil(filtered.length / limit));
-
 
     const start = (page - 1) * limit;
     const end = start + limit;
@@ -78,21 +77,27 @@ function Products() {
           Products Collection
         </h2>
 
-        {/* Category Section */}
-        <div className="mb-5 text-center">
-          {categories.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => { setSelectedCategory(cat); setPage(1); }}
-              className={`btn btn-sm me-2 mb-2 ${selectedCategory === cat ? "btn-danger" : "btn-outline-danger"
-                }`}
-            >
-              {cat === "All" ? "All Products" : cat.charAt(0).toUpperCase() + cat.slice(1)}
-            </button>
-          ))}
+
+
+        <div className="mb-5 text-center d-flex justify-content-center">
+          <select
+            className="form-select w-auto"
+            value={selectedCategory}
+            onChange={(e) => {
+              setSelectedCategory(e.target.value);
+              setPage(1);
+            }}
+          >
+            {categories.map((cat) => (
+              <option key={cat} value={cat}>
+                {cat === "All" ? "All Products" : cat.charAt(0).toUpperCase() + cat.slice(1)}
+              </option>
+            ))}
+          </select>
         </div>
 
-        {/* Products Grid */}
+
+
         <div className="row g-4">
           {products.map((product) => (
             <div className="col-lg-3 col-md-4 col-sm-6" key={product.id}>
@@ -149,7 +154,7 @@ function Products() {
           ))}
         </div>
 
-        {/* Pagination */}
+
         <div className="d-flex justify-content-center align-items-center gap-3 mt-5">
           <button
             onClick={() => { if (page > 1) setPage(page - 1); }}
@@ -168,7 +173,6 @@ function Products() {
       </div>
     </section>
   );
-
 }
 
 export default Products;
