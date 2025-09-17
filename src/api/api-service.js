@@ -23,7 +23,7 @@ const getBackendData = async (endpoint) => {
     const response = await axios.get(`${BACKEND_URL}/${endpoint}`, {
       headers: {
         Authorization: `Bearer ${token}`,
-        "Cache-Control": "no-cache",   // 👈 add this
+        "Cache-Control": "no-cache",   //  add this
       },
     });
     return response.data;
