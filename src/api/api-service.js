@@ -5,14 +5,13 @@ const BACKEND_URL = "http://localhost:8000/api";
 // Backend POST
 const postBackendData = async (endpoint, data) => {
   try {
-    const res = await fetch(`${BACKEND_URL}/${endpoint}`, {
-      method: "POST",
+    const res = await axios.post(`${BACKEND_URL}/${endpoint}`, data, {
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
+
     });
-    return await res.json();
+    return res.data; // axios automatically parses JSON
   } catch (err) {
-    console.error("Error posting backend data:", err);
+    console.error("Error posting backend data:", err.response?.data || err.message);
     throw err;
   }
 };

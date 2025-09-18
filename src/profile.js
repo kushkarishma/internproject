@@ -7,15 +7,23 @@ function Profile() {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [formData, setFormData] = useState({ name: "", email: "" });
-
+  const [newProfileImage, setNewProfileImage] = useState("");
+  const [loading, setLoading] = useState(true);
 
   const getUser = async () => {
     try {
       const data = await getBackendData("users/profile");
+      console.log("Fetched user data from backend:", data);
       setUser(data);
-      setFormData({ name: data.name, email: data.email });
+      setFormData({
+        name: data.name,
+        email: data.email,
+      });
     } catch (error) {
       console.error("Error fetching user:", error);
+      alert("Failed to load profile");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -32,19 +40,40 @@ function Profile() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setNewProfileImage(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await putBackendData(`users/profile`, formData);
-      alert("Profile updated successfully ");
-      setUser({ ...user, name: formData.name });
+      const payload = {
+        ...formData,
+      };
+      if (newProfileImage) {
+        payload.profileImage = newProfileImage;
+      }
+
+      const updatedUser = await putBackendData("users/profile", payload);
+      alert("Profile updated successfully");
+
+      setUser(updatedUser.user);
+      // setNewProfileImage("");
     } catch (error) {
       console.error("Error updating profile:", error);
-      alert("Something went wrong ");
+      alert("Something went wrong");
     }
   };
 
-  if (!user) {
+
+
+  if (loading) {
     return (
       <div className="container mt-5 text-center">
         <h3>Loading profile...</h3>
@@ -55,14 +84,9 @@ function Profile() {
   return (
     <div className="profile-container">
       <div className="profile-header">
-        <img
-          src={user.backgroundImage || "https://via.placeholder.com/1200x300"}
-          alt="Background"
-          className="background-img"
-        />
         <div className="profile-img-wrapper">
           <img
-            src={user.profileImage || "https://via.placeholder.com/150"}
+            src={newProfileImage || user?.profileImage}
             alt="Profile"
             className="profile-img"
           />
@@ -70,12 +94,11 @@ function Profile() {
       </div>
 
       <div className="profile-body">
-        <h2 className="username">{user.name}</h2>
+        <h2 className="username">{user?.name}</h2>
 
         <div className="edit-form">
           <h5>Edit Profile</h5>
           <form onSubmit={handleSubmit}>
-
             <div className="form-group">
               <label>Full Name</label>
               <input
@@ -86,7 +109,6 @@ function Profile() {
                 required
               />
             </div>
-
 
             <div className="form-group">
               <label>Email Address</label>
@@ -105,7 +127,7 @@ function Profile() {
                 type="file"
                 name="profileImage"
                 accept="image/*"
-                onChange={handleChange}
+                onChange={handleImageChange}
               />
             </div>
 
