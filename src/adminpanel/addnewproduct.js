@@ -67,21 +67,7 @@ function AddNewProduct() {
       <div className="card shadow-lg p-4">
         <h3 className="mb-3">{isEditing ? "Edit Product" : "Add Product"}</h3>
         <form onSubmit={handleSubmit}>
-          {/* ID */}
-          {/* <div className="mb-3">
-            <label htmlFor="id" className="form-label">ID</label>
-            <input
-              type="number"
-              className="form-control"
-              id="id"
-              placeholder="Enter product ID"
-              value={formData.id}
-              onChange={handleChange}
-              readOnly={isEditing}
-            />
-          </div> */}
 
-          {/* Title */}
           <div className="mb-3">
             <label htmlFor="title" className="form-label">Title</label>
             <input

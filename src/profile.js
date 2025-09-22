@@ -8,7 +8,9 @@ function Profile() {
   const [user, setUser] = useState(null);
   const [formData, setFormData] = useState({ name: "", email: "" });
   const [newProfileImage, setNewProfileImage] = useState("");
+  const [galleryImages, setGalleryImages] = useState([]);
   const [loading, setLoading] = useState(true);
+
 
   const getUser = async () => {
     try {
@@ -19,6 +21,10 @@ function Profile() {
         name: data.name,
         email: data.email,
       });
+
+      if (data.galleryImages) {
+        setGalleryImages(JSON.parse(data.galleryImages));
+      }
     } catch (error) {
       console.error("Error fetching user:", error);
       alert("Failed to load profile");
@@ -50,28 +56,41 @@ function Profile() {
       reader.readAsDataURL(file);
     }
   };
+
+  const handleGalleryChange = (e) => {
+    const files = Array.from(e.target.files);
+    const readers = files.map(
+      (file) =>
+        new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onloadend = () => resolve(reader.result);
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
+        })
+    );
+
+    Promise.all(readers).then((images) => {
+      setGalleryImages((prev) => [...prev, ...images]);
+    });
+  };
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const payload = {
         ...formData,
+        profileImage: newProfileImage || undefined,
+        galleryImages: JSON.stringify(galleryImages),
       };
-      if (newProfileImage) {
-        payload.profileImage = newProfileImage;
-      }
-
       const updatedUser = await putBackendData("users/profile", payload);
       alert("Profile updated successfully");
-
       setUser(updatedUser.user);
-      // setNewProfileImage("");
     } catch (error) {
       console.error("Error updating profile:", error);
       alert("Something went wrong");
     }
   };
-
-
 
   if (loading) {
     return (
@@ -99,6 +118,7 @@ function Profile() {
         <div className="edit-form">
           <h5>Edit Profile</h5>
           <form onSubmit={handleSubmit}>
+
             <div className="form-group">
               <label>Full Name</label>
               <input
@@ -129,6 +149,28 @@ function Profile() {
                 accept="image/*"
                 onChange={handleImageChange}
               />
+            </div>
+
+            <div className="form-group">
+              <label>Gallery Images</label>
+              <input
+                type="file"
+                name="galleryImages"
+                accept="image/*"
+                multiple
+                onChange={handleGalleryChange}
+              />
+            </div>
+
+            <div className="gallery-preview">
+              {galleryImages.map((img, index) => (
+                <img
+                  key={index}
+                  src={img}
+                  alt={`gallery-${index}`}
+                  className="gallery-img"
+                />
+              ))}
             </div>
 
             <button type="submit" className="btn-save">
