@@ -80,3 +80,31 @@
   background-color: black;
   color: #F4D4D6;
 }
+.gallery-item {
+  position: relative;
+  display: inline-block;
+  margin: 5px;
+}
+
+.gallery-img {
+  width: 200px;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.delete-btn {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  background: red;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  padding: 2px 5px;
+  font-size: 12px;
+}
+.delete-btn:hover {
+  background: red;
+}

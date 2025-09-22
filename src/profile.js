@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getBackendData, putBackendData } from "./api/api-service";
+import { getBackendData, putBackendData, deleteBackendData } from "./api/api-service";
 import "./profile.css";
 
 function Profile() {
@@ -11,20 +11,12 @@ function Profile() {
   const [galleryImages, setGalleryImages] = useState([]);
   const [loading, setLoading] = useState(true);
 
-
   const getUser = async () => {
     try {
       const data = await getBackendData("users/profile");
-      console.log("Fetched user data from backend:", data);
       setUser(data);
-      setFormData({
-        name: data.name,
-        email: data.email,
-      });
-
-      if (data.galleryImages) {
-        setGalleryImages(JSON.parse(data.galleryImages));
-      }
+      setFormData({ name: data.name, email: data.email });
+      if (data.galleryImages) setGalleryImages(data.galleryImages);
     } catch (error) {
       console.error("Error fetching user:", error);
       alert("Failed to load profile");
@@ -42,20 +34,15 @@ function Profile() {
     }
   }, [navigate]);
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setNewProfileImage(reader.result);
-      };
-      reader.readAsDataURL(file);
-    }
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onloadend = () => setNewProfileImage(reader.result);
+    reader.readAsDataURL(file);
   };
+
 
   const handleGalleryChange = (e) => {
     const files = Array.from(e.target.files);
@@ -63,34 +50,61 @@ function Profile() {
       (file) =>
         new Promise((resolve, reject) => {
           const reader = new FileReader();
-          reader.onloadend = () => resolve(reader.result);
+          reader.onloadend = () => resolve({ image: reader.result });
           reader.onerror = reject;
           reader.readAsDataURL(file);
         })
     );
-
     Promise.all(readers).then((images) => {
       setGalleryImages((prev) => [...prev, ...images]);
     });
   };
 
 
+  const handleDeleteImage = async (img) => {
+    if (img.id) {
+      debugger
+      try {
+        await deleteBackendData(`users/gallery/${img.id}`);
+        setGalleryImages((prev) => prev.filter((i) => i.id !== img.id));
+      } catch (err) {
+        console.error("Error deleting image:", err);
+        alert("Failed to delete image");
+      }
+    } else {
+      setGalleryImages((prev) => prev.filter((i) => i !== img));
+    }
+  };
+
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     try {
       const payload = {
         ...formData,
         profileImage: newProfileImage || undefined,
         galleryImages: JSON.stringify(galleryImages),
       };
+
       const updatedUser = await putBackendData("users/profile", payload);
-      alert("Profile updated successfully");
+
+     
+      setGalleryImages(updatedUser.user.galleryImages);
       setUser(updatedUser.user);
-    } catch (error) {
-      console.error("Error updating profile:", error);
+
+      alert("Profile updated successfully");
+    } catch (err) {
+      console.error(err);
       alert("Something went wrong");
     }
   };
+
+
+  useEffect(() => {
+    console.log("Current galleryImages state:", galleryImages);
+  }, [galleryImages]);
 
   if (loading) {
     return (
@@ -118,14 +132,13 @@ function Profile() {
         <div className="edit-form">
           <h5>Edit Profile</h5>
           <form onSubmit={handleSubmit}>
-
             <div className="form-group">
               <label>Full Name</label>
               <input
                 type="text"
                 name="name"
                 value={formData.name}
-                onChange={handleChange}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 required
               />
             </div>
@@ -136,7 +149,7 @@ function Profile() {
                 type="email"
                 name="email"
                 value={formData.email}
-                onChange={handleChange}
+                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 required
               />
             </div>
@@ -163,15 +176,23 @@ function Profile() {
             </div>
 
             <div className="gallery-preview">
-              {galleryImages.map((img, index) => (
-                <img
-                  key={index}
-                  src={img}
-                  alt={`gallery-${index}`}
-                  className="gallery-img"
-                />
-              ))}
+              {galleryImages.map((img) => {
+                const imgSrc = img.image || img;
+                return (
+                  <div key={img.id || imgSrc} className="gallery-item">
+                    <img src={imgSrc} alt="gallery" className="gallery-img" />
+                    <button
+                      type="button"
+                      className="delete-btn"
+                      onClick={() => handleDeleteImage(img)}
+                    >
+                      ❌
+                    </button>
+                  </div>
+                );
+              })}
             </div>
+
 
             <button type="submit" className="btn-save">
               Save Changes
