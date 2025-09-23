@@ -7,10 +7,10 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 
 function Products() {
-  const [allProducts, setAllProducts] = useState([]); // all data
-  const [products, setProducts] = useState([]);       // filtered data
+  const [allProducts, setAllProducts] = useState([]); 
+  const [products, setProducts] = useState([]);       
   const [selectedCategory, setSelectedCategory] = useState("All");
-  const [categories, setCategories] = useState(["All"]); // 🔥 dynamic categories
+  const [categories, setCategories] = useState(["All"]);s
   let [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const limit = 6;

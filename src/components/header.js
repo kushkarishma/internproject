@@ -1,21 +1,27 @@
 import { Link, useNavigate } from "react-router-dom";
-import { ShoppingCart, LogOut, LogIn } from "lucide-react"; 
+import { ShoppingCart, LogOut, LogIn } from "lucide-react";
+import { useDispatch } from "react-redux";
+import { logout } from "../reduxfeatures/login/authSliceReducer";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import "./header.css";
 
 function Header() {
   const navigate = useNavigate();
- const token = localStorage.getItem("token");
+  const dispatch = useDispatch();
+
+  const token = localStorage.getItem("token");
+
   const handleLogout = () => {
+    dispatch(logout());
     localStorage.removeItem("token");
+    localStorage.removeItem("user");
     navigate("/login");
   };
-
   return (
     <nav className="navbar navbar-expand-lg shadow sticky-top custom-header">
       <div className="container-fluid">
-        
+
         {/* ✅ Left Side - Logo */}
         <Link className="navbar-brand fw-bold" to="/">
           MyShop
@@ -67,23 +73,23 @@ function Header() {
               </Link>
             </li>
 
-             <li className="nav-item">
-      {token ? (
-        <button
-          onClick={handleLogout}
-          className="btn btn-outline-dark btn-sm d-flex align-items-center"
-        >
-          <LogOut size={16} className="me-1" /> Logout
-        </button>
-      ) : (
-        <button
-          onClick={() => navigate("/login")}
-          className="btn btn-outline-dark btn-sm d-flex align-items-center"
-        >
-          <LogIn size={16} className="me-1" /> Login
-        </button>
-      )}
-    </li>
+            <li className="nav-item">
+              {token ? (
+                <button
+                  onClick={handleLogout}
+                  className="btn btn-outline-dark btn-sm d-flex align-items-center"
+                >
+                  <LogOut size={16} className="me-1" /> Logout
+                </button>
+              ) : (
+                <button
+                  onClick={() => navigate("/login")}
+                  className="btn btn-outline-dark btn-sm d-flex align-items-center"
+                >
+                  <LogIn size={16} className="me-1" /> Login
+                </button>
+              )}
+            </li>
           </ul>
         </div>
       </div>
